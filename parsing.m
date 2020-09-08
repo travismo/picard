@@ -5,14 +5,14 @@ function curve_line_parser(s : skip_b := true)
     // between the sixth and seventh ":", so we skip that field.
     curve_data := [**];
     data := "";
-    counter := 0
+    counter := 0;
     for i := 1 to #s do
         if s[i] eq ":" then
-            counter += 1;
-            if skip_b and counter ne 7 then
+	    counter := counter + 1;
+	    if skip_b and counter ne 7 then
                 Append(~curve_data, eval(data));
-                data := "";
             end if;
+	    data := "";
         else
             data := data cat s[i];
         end if;
