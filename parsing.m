@@ -1,11 +1,18 @@
-function curve_line_parser(s)
+function curve_line_parser(s : skip_b := true)
     //turns a colon separated file into a list
+    //if skip_b is set to false, this will try to parse the b_values as well,
+    //which may fail if a padic ring is not intialized. the b_values come
+    // between the sixth and seventh ":", so we skip that field.
     curve_data := [**];
     data := "";
+    counter := 0
     for i := 1 to #s do
         if s[i] eq ":" then
-            Append(~curve_data, eval(data));
-            data := "";
+            counter += 1;
+            if skip_b and counter ne 7 then
+                Append(~curve_data, eval(data));
+                data := "";
+            end if;
         else
             data := data cat s[i];
         end if;
@@ -15,7 +22,7 @@ function curve_line_parser(s)
 end function;
 
 function curve_line_parser_bval(s)
-    //turns a colon separated file into a list, 
+    //turns a colon separated file into a list,
     //excluding the last colon separate piece which it returns as a string
     //used for files with bvals because p-adic numbers up to prec cannot be evaluated
     curve_data := [**];
@@ -45,8 +52,8 @@ end function;
 
 procedure curves_divs_parser(curves_path, out_path)
     // Reads in masterrank1wdiv.txt, and writes to
-    // outpath in the form disc:f:div. div is taken to 
-    // either be linear or just the first div in list of 
+    // outpath in the form disc:f:div. div is taken to
+    // either be linear or just the first div in list of
     // divs.
     curves := eval(Read(curves_path));
     parsed_curves := Open(out_path, "a");
