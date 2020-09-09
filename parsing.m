@@ -1,23 +1,26 @@
 function curve_line_parser(s : skip_b := true)
     //turns a colon separated file into a list
-    //if skip_b is set to false, this will try to parse the b_values as well,
-    //which may fail if a padic ring is not intialized. the b_values come
-    // between the sixth and seventh ":", so we skip that field.
+    //if skip_analyzed is set to false, this will try to parse the b_values,
+    //and analyzed points as well,
+    //which may fail if their parents are not initialized. the b_values come
+    // after the sixth :, so we do not evaluate any field after that.
     curve_data := [**];
     data := "";
     counter := 0;
     for i := 1 to #s do
         if s[i] eq ":" then
-	    counter := counter + 1;
-	    if skip_b and counter ne 7 then
+	          counter := counter + 1;
+	          if skip_b and counter lt 7 then
                 Append(~curve_data, eval(data));
+            else
+                Append(~curve_data, data);
             end if;
-	    data := "";
+            data := "";
         else
             data := data cat s[i];
         end if;
     end for;
-    Append(~curve_data, eval(data)); // Append final entry of curve_data
+    Append(~curve_data, data); // Append final entry of curve_data
     return curve_data;
 end function;
 
